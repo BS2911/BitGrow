@@ -1,0 +1,2 @@
+# BitGrow
+BitGrow Contract
