@@ -57,7 +57,6 @@ contract BitGrow is Ownable, ReentrancyGuard {
     enum OrderState {
         PendingCollect, //待领取
         InProgress, //进行中
-        PendingInspection, //待验收
         Completed, //已完成
         Canceled //已取消
     }
@@ -100,14 +99,14 @@ contract BitGrow is Ownable, ReentrancyGuard {
 
     function acceptOrder(uint256 orderIndex) public callerIsUser
     {
-        require(orderInfos[orderIndex].orderState == OrderState.PendingInspection, "State Error.");
+        require(orderInfos[orderIndex].orderState == OrderState.PendingCollect, "State Error.");
         orderInfos[orderIndex].orderState = OrderState.InProgress;
         orderInfos[orderIndex].acceptUseraddress = msg.sender;
     }
 
     function cancelOrder(uint256 orderIndex) public callerIsUser
     {
-        require(orderInfos[orderIndex].orderState == OrderState.PendingInspection, "State Error.");
+        require(orderInfos[orderIndex].orderState == OrderState.PendingCollect, "State Error.");
         require(msg.sender == orderInfos[orderIndex].officialaddress, "The project party needs to be able to modify it themselves.");
         orderInfos[orderIndex].orderState = OrderState.Canceled;
         (bool success,) = address(orderInfos[orderIndex].officialaddress).call{value : orderInfos[orderIndex].orderAmount}("");
